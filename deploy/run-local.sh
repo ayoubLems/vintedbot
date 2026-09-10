@@ -4,6 +4,18 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+if [[ "$(uname -s)" == Darwin ]] && command -v brew >/dev/null; then
+  JAVA17_PREFIX=$(brew --prefix openjdk@17 2>/dev/null || true)
+  JAVA17_HOME="$JAVA17_PREFIX/libexec/openjdk.jdk/Contents/Home"
+  if [[ -x "$JAVA17_HOME/bin/java" ]]; then
+    JAVA_HOME="$JAVA17_HOME"
+    export JAVA_HOME
+    export PATH="$JAVA_HOME/bin:$PATH"
+  fi
+fi
+JAVA_MAJOR=$(java -version 2>&1 | awk -F '[".]' '/version/ {print $2}')
+[[ "$JAVA_MAJOR" == 17 ]] || { echo "Java 17 requis. Exécuter ./scripts/setup-macos.sh"; exit 1; }
+
 # Load .env if present
 if [[ -f .env ]]; then
   set -a; source .env; set +a
@@ -21,7 +33,7 @@ export DB_URL DB_USER DB_PASSWORD IMAGE_CACHE_DIR
 
 JAR=$(ls target/vinted-telegram-bot-*.jar 2>/dev/null | head -1)
 if [[ -z "$JAR" ]]; then
-  echo "Building jar first..."; ./mvnw -q package -DskipTests 2>/dev/null || mvn -q package -DskipTests
+  echo "Building jar first..."; ./scripts/mvn.sh -q package -DskipTests
   JAR=$(ls target/vinted-telegram-bot-*.jar | head -1)
 fi
 
