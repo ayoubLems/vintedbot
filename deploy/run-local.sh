@@ -4,6 +4,12 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+if [[ "$(uname -s)" == Darwin ]] && command -v brew >/dev/null && brew --prefix openjdk@17 >/dev/null 2>&1; then
+  JAVA_HOME="$(brew --prefix openjdk@17)/libexec/openjdk.jdk/Contents/Home"
+  export JAVA_HOME
+  export PATH="$JAVA_HOME/bin:$PATH"
+fi
+
 # Load .env if present
 if [[ -f .env ]]; then
   set -a; source .env; set +a
@@ -21,7 +27,7 @@ export DB_URL DB_USER DB_PASSWORD IMAGE_CACHE_DIR
 
 JAR=$(ls target/vinted-telegram-bot-*.jar 2>/dev/null | head -1)
 if [[ -z "$JAR" ]]; then
-  echo "Building jar first..."; ./mvnw -q package -DskipTests 2>/dev/null || mvn -q package -DskipTests
+  echo "Building jar first..."; ./scripts/mvn.sh -q package -DskipTests
   JAR=$(ls target/vinted-telegram-bot-*.jar | head -1)
 fi
 
