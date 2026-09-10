@@ -143,6 +143,8 @@ Starts PostgreSQL + the bot; Flyway migrates the schema on boot.
 
 ## Run locally (without Docker)
 
+Installation macOS reproductible : [`docs/MAC_SETUP.md`](docs/MAC_SETUP.md).
+
 Requirements: JDK 17+, Maven, PostgreSQL. Chrome is optional (only needed if
 `SELENIUM_ENABLED=true`; WebDriverManager resolves the driver automatically).
 
