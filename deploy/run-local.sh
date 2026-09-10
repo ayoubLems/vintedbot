@@ -4,11 +4,17 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-if [[ "$(uname -s)" == Darwin ]] && command -v brew >/dev/null && brew --prefix openjdk@17 >/dev/null 2>&1; then
-  JAVA_HOME="$(brew --prefix openjdk@17)/libexec/openjdk.jdk/Contents/Home"
-  export JAVA_HOME
-  export PATH="$JAVA_HOME/bin:$PATH"
+if [[ "$(uname -s)" == Darwin ]] && command -v brew >/dev/null; then
+  JAVA17_PREFIX=$(brew --prefix openjdk@17 2>/dev/null || true)
+  JAVA17_HOME="$JAVA17_PREFIX/libexec/openjdk.jdk/Contents/Home"
+  if [[ -x "$JAVA17_HOME/bin/java" ]]; then
+    JAVA_HOME="$JAVA17_HOME"
+    export JAVA_HOME
+    export PATH="$JAVA_HOME/bin:$PATH"
+  fi
 fi
+JAVA_MAJOR=$(java -version 2>&1 | awk -F '[".]' '/version/ {print $2}')
+[[ "$JAVA_MAJOR" == 17 ]] || { echo "Java 17 requis. Exécuter ./scripts/setup-macos.sh"; exit 1; }
 
 # Load .env if present
 if [[ -f .env ]]; then
