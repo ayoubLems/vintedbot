@@ -56,6 +56,14 @@ Transférer le dump chiffré. Sur le nouveau Mac :
 
 Arrêter l'ancien bot avant de démarrer le nouveau : un même token Telegram ne doit pas faire du long polling sur deux machines.
 
+## Démarrage automatique
+
+```bash
+./scripts/install-launchd.sh
+```
+
+Le script génère le plist avec le chemin local de ce Mac.
+
 ## Vérification
 
 ```bash
