@@ -93,7 +93,10 @@ public class VintedApiClient {
                 .execute();
 
         int code = res.statusCode();
-        if (code == 401 || code == 403 || code == 429) {
+        // Vinted can return 404 to automated clients instead of exposing the
+        // anti-bot challenge. Treat it as a block to avoid checking every
+        // subscription with the same rejected session.
+        if (code == 401 || code == 403 || code == 404 || code == 429) {
             sessions.remove(host);
             if (retryOnAuthFail && code != 429) {
                 log.debug("API auth failure ({}) for {}, refreshing session once", code, host);
