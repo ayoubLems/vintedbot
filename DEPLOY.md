@@ -70,12 +70,14 @@ Railway peuvent utiliser `Dockerfile.slim` de manière similaire.
 ## Option 3 : Mac ou mini-PC personnel
 
 Le bot peut fonctionner gratuitement sur votre propre ordinateur, qui doit
-rester allumé. Pour installer l’agent `launchd` :
+rester allumé. Après avoir créé `.env`, installer l’agent `launchd` :
 
 ```bash
-cp deploy/com.vinted.bot.plist ~/Library/LaunchAgents/
-launchctl load ~/Library/LaunchAgents/com.vinted.bot.plist
+./scripts/install-launchd.sh
 ```
+
+Le plist est généré dans `~/Library/LaunchAgents/` avec le chemin réel du
+checkout et n’est jamais versionné.
 
 Pour empêcher la mise en veille pendant une exécution manuelle :
 
