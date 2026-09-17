@@ -6,9 +6,12 @@ VERSION=3.9.9
 TOOLS="$ROOT/.tools"
 MAVEN="$TOOLS/apache-maven-$VERSION"
 
-if [[ "$(uname -s)" == Darwin ]] && command -v brew >/dev/null; then
-  JAVA17_PREFIX=$(brew --prefix openjdk@17 2>/dev/null || true)
-  JAVA17_HOME="$JAVA17_PREFIX/libexec/openjdk.jdk/Contents/Home"
+if [[ "$(uname -s)" == Darwin ]]; then
+  JAVA17_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null || true)
+  if [[ ! -x "$JAVA17_HOME/bin/java" ]] && command -v brew >/dev/null; then
+    JAVA17_PREFIX=$(brew --prefix openjdk@17 2>/dev/null || true)
+    JAVA17_HOME="$JAVA17_PREFIX/libexec/openjdk.jdk/Contents/Home"
+  fi
   if [[ -x "$JAVA17_HOME/bin/java" ]]; then
     JAVA_HOME="$JAVA17_HOME"
   fi
